@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+
+{% block content %}
+<script src="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/js/medium-editor.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+
+  <style>
+    
+  </style>
+  <div style="text-align: center; max-width: 850px; margin: 4rem auto">
+    <div class="mb-4">
+      <h4>Article Create</h4>
+    </div>
+    <form action="{% url 'articleapp:create' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      <input id="project_pk" type="hidden" value="" name="project_pk">
+      <input type="submit" class="btn btn-dark rounded-pill col-6 mt-3">
+    </form>
+  </div>
+
+<script>
+  var editor = new MediumEditor('.editable');
+  var search = location.search;
+  var params = new URLSearchParams(search);
+  var getType = params.get('project_pk');
+  var target = document.getElementById("project_pk");
+  target.setAttribute("value", getType);
+</script>
+
+{% endblock %}

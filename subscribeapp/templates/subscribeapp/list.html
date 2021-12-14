@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- 아티클앱의 list.html 을 그대로 가져옴 그러나 몇가지 이름만 바꿔줌 -->
+<!-- 아태클앱의 container a 의 값은 삭제 -->
+<!-- 아태클앱의 container img 의 값 픽셀지정 -->
+<!-- 오브젝핏 커버는  그사이즈 안에있는것 빼고는 다 짤라내지는 형식으로 구현이됨 -->
+<style>
+
+    .container {
+        padding: 0;
+        margin: 0, auto;
+    }
+
+    .container div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 1rem;
+    }
+
+    .container img {
+      width: 7rem;
+      height: 7rem;
+      object-fit: cover;
+      border-radius: 1rem;
+    }
+
+</style>
+{% if user == request.user %}
+    {% if subscription_list %}
+        <div class="container">
+            {% for subscription in subscription_list %}
+                {% if subscription.user == request.user %}
+                <a a href="{% url 'projectapp:detail' pk=subscription.project.pk %}">
+                <div style="display: block; text-align: center">
+                    <img src="{{ subscription.project.image.url }}" alt="">
+                    <h5 class="mt-2" style="font-weight: bold;">
+                     {{ subscription.project.title}}
+                    </h5>
+                </div>
+                </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <script src="{% static 'js/magicgrid.js' %}"></script>
+        {% else %}
+        <div class="text-center">
+            <h1>No Projects YET!</h1>
+        </div>
+    {% endif %}
+
+    {% include 'snippets/pagination.html' with page_obj=page_obj %}
+
+{% endif %}
+{% endblock %}
+
+

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+  <div style="text-align: center; max-width: 500px; margin: 4rem auto">
+    <div class="mb-4">
+      <h4>Comment Update</h4>
+    </div>
+    <form action="{% url 'commentapp:update' pk=target_comment.pk %}" method="post">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      {% if user.is_authenticated %}
+      <input type="submit" class="btn btn-dark rounded-pill col-6 mt-3">
+      {% endif %}
+      <!-- temp_comment.article = Article.objects.get(pk=self.request.POST['article_pk']) 이걸 얻기 위해 hidden 을 씀 -->
+      <input type="hidden" name="article_pk" value="{{ article.pk }}">
+    </form>
+  </div>
+
+{% endblock %}

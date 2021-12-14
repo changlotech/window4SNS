@@ -1,0 +1,70 @@
+{% load static %}
+<!-- article 앱의 list.html 복붙 하는데 조금씩 수정 블록컨텐츠 블록삭제, extends 삭제-->
+<style>
+
+    .container {
+        padding: 0;
+        margin: 0, auto;
+    }
+
+    .container a {
+      width: 45%;
+      max-width: 250px;
+    }
+
+    .container div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 1rem;
+    }
+
+    .container img {
+      width: 100%;
+      border-radius: 1rem;
+    }
+
+    .article_like, .article_comment {
+        display: inline;
+        vertical-align: middle;
+        color: rgb(49, 40, 40);
+        font-size: 1.05rem !important;
+    }
+    .card_bot {
+        box-shadow: 0 4px 4px -4px black;       
+        
+    }
+
+
+</style>
+    {% if article_list %}
+    <div class="container">
+        {% for article in article_list %}
+        {% if article.like > 1 %}
+        <a href="{% url 'articleapp:detail' pk=article.pk %}">
+            {% include 'snippets/card.html' with article=article %}
+            <div class="card_bot">
+              <span class="fav_comment_count">        
+                  <i style="color: #ff6e6e; vertical-align: bottom" class="material-icons">favorite</i>
+                  <p class="article_like">{{ article.like }}</p>
+                  <i style="color: #6a6a6a; vertical-align: bottom" class="material-icons">comment</i>
+                  {% if article.comment.count > 0 %}
+                  <p class="article_comment">{{ article.comment.count  }}</p>
+                  {% else %}
+                  <p class="article_comment">0</p>                    
+                  {% endif %}
+              </span>
+          </div>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <script src="{% static 'js/magicgrid.js' %}"></script>
+    {% else %}
+    <div class="text-center">
+        <h1>No Articles YET!</h1>
+    </div>
+    {% endif %}
+
+    {% include 'snippets/pagination.html' with page_obj=page_obj %}

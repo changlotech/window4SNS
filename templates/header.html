@@ -1,0 +1,65 @@
+<div class="pragmatic_header">
+    <div>
+        <a href="/">
+            <h1 class="pragmatic_logo">WINDOW4SNS</h1>
+        </a>
+    </div>
+    <div class="pragmatic_header_navbar">
+        <a href="{% url 'articleapp:list' %}?st=hot" class="prgmatic_header_nav">
+            <span>
+                인기게시글
+            </span>
+        </a>
+        <a href="{% url 'articleapp:list' %}?st=day" class="prgmatic_header_nav">
+            <span>
+                투데이베스트
+            </span>
+        </a>
+        <a href="{% url 'articleapp:list' %}?st=week" class="prgmatic_header_nav">
+            <span>
+                주간베스트
+            </span>
+        </a>
+        <a href="{% url 'articleapp:list' %}?st=month" class="prgmatic_header_nav">
+            <span>
+                월간베스트
+            </span>
+        </a>
+        <a href="{% url 'projectapp:list' %}" class="prgmatic_header_nav">
+            <span>갤러리</span>
+        </a>
+        <a href="{% url 'subscribeapp:list' %}" class="prgmatic_header_nav">
+            <span>구독갤러리</span>
+        </a>
+        <a href="{% url 'subscribeapp:hotlist' %}" class="prgmatic_header_nav">
+            <span>구독갤러리인기글</span>
+        </a>
+        {% if not user.is_authenticated %}
+        <!-- 회원가입 -->
+        <a href="{% url 'accountapp:create' %}" class="prgmatic_header_nav">
+            <span>
+                회원가입
+            </span>
+        </a>
+         <!-- ?next 파라미터의 값 즉 현재위치로 리다이렉트-->
+        <a href="{% url 'accountapp:login' %}?next={{ request.path }}?st=hot" class="prgmatic_header_nav">
+            <span>
+                로그인
+            </span>
+        </a>
+        {% else %}
+        <!-- ?next 파라미터의 값 즉 현재위치로 리다이렉트-->
+        <a href="{% url 'accountapp:logout' %}?next={{ request.path }}?st=hot" class="prgmatic_header_nav">
+            <span>
+                로그아웃
+            </span>
+        </a>
+        <!-- 해당 주소에 user.pk 의 값을 담아서 보내줌 -->
+        <a href="{% url 'accountapp:detail' pk=user.pk %}" class="prgmatic_header_nav">
+            <span>
+                내 페이지
+            </span>
+        </a>
+        {% endif %}
+    </div>
+</div>

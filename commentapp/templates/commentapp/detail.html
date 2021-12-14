@@ -1,0 +1,104 @@
+{% load bootstrap4 %}
+<style>
+    .clocking {
+        display: none;
+    }
+</style>
+
+
+<div style="border: 1px solid; text-align: left; padding: 4%; margin: 1rem 0; border-radius: 1rem;
+            border-color: #bbb; cursor: pointer;" class="main_commnet-{{ comment.pk }}">
+    <div>
+        {% if comment.writer.profile %}
+        <!-- 프로필사진 -->
+        <img src="{{ comment.writer.profile.image.url }}" style="height: 3rem; width: 3rem; border-radius: 20rem;  object-fit: cover;" />
+        &nbsp;
+        <strong>
+            <!-- 댓글작성자.프로필.닉네임 -->
+            {{ comment.writer.profile.nickname }}
+        </strong>
+        {% else %}
+        <strong>
+            <!-- 댓글작성자.프로필.닉네임 -->
+            <span style="vertical-align: -0.24rem;" class="material-icons">face</span> {{ comment.writer }}
+        </strong>
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;
+        <!-- 댓글작성시간 -->
+        {{ comment.created_at }}
+    </div>
+    <div style="margin: 1rem 0;">
+        <!-- 댓글내용 -->
+        {{ comment.content | linebreaks }}
+    </div>
+
+
+
+
+
+    <!-- 작성자랑 유저가 같은경우에만 삭제버튼 보이게끔 -->
+    {% if comment.writer == user %}
+    <div style="text-align: right">
+        <a title="수정" href="{% url 'commentapp:update' pk=comment.pk %}" class="material-icons" style="box-shadow: 0 0 4px #ccc; border-radius: 10rem; padding: 0.4rem;">
+            edit
+        </a>
+        <a title="삭제" href="{% url 'commentapp:delete' pk=comment.pk %}" class="material-icons"
+           style="box-shadow: 0 0 4px #fcc; border-radius: 10rem; padding: .4rem;">
+            cancel
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% for subcomment in comment.subcomment.all %}
+<div id="sub_comment-{{ subcomment.pk }}" style="border: 1px solid; text-align: left; padding: 4%; margin: 1rem 0; border-radius: 1rem; max-width:615px; border-color: #bbb;" class="ml-auto">
+    <div>
+        {% if subcomment.writer.profile %}
+        <!-- 프로필사진 -->
+        <img src="{{ subcomment.writer.profile.image.url }}" style="height: 3rem; width: 3rem; border-radius: 20rem;  object-fit: cover;" />
+        &nbsp;
+        <strong>
+            <!-- 댓글작성자.프로필.닉네임 -->
+            {{ subcomment.writer.profile.nickname }}
+        </strong>
+        {% else %}
+        <strong>
+            <!-- 댓글작성자.프로필.닉네임 -->
+            <span style="vertical-align: -0.24rem;" class="material-icons">face</span> {{ subcomment.writer }}
+        </strong>
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;
+        <!-- 댓글작성시간 -->
+        {{ subcomment.created_at }}
+    </div>
+    <div style="margin: 1rem 0;">
+        <!-- 댓글내용 -->
+        {{ subcomment.content | linebreaks }}
+    </div>
+</div>
+{% endfor %}
+<!-- 대댓글 구현폼 -->
+    <div style="text-align: center; max-width: 600px; display: none;" class="ml-auto sub_comment-{{ comment.pk }}">
+        <form action="{% url 'commentapp:subcreate' %}" method="post">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% if user.is_authenticated %}
+          <input type="submit" class="btn btn-dark rounded-pill col-3 ml-auto" id="test">
+          {% else %}
+          <!-- next 파라미터로 로그인 할시에 여기로 다시 돌아오게끔 함 -->
+          <a href="{% url 'accountapp:login' %}?next={{ request.path }}" class="btn btn-dark rounded-pill col-6 mt-3">
+            Log in
+          </a>
+          {% endif %}
+          <input type="hidden" name="commnet_pk" value="{{ comment.pk }}">
+        </form>
+    </div>
+<!-- -->
+
+<script>
+    $(document).ready(function(){
+        $('.main_commnet-{{ comment.pk }}').click(function(){
+            $('.sub_comment-{{ comment.pk }}').toggle();
+        });
+    });   
+
+</script>

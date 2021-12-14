@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- target_user 는 AccountCreateView 에서 내가 설정한 이름이다. 이렇게 하면 다른사람이 내 미니홈피? 개념의 공간에 와도 내이름이 게속 출력이 됨 -->
+  <div>
+    <div style="text-align: center; max-width: 500px; margin: 4rem auto;">
+      {% if target_user.profile %}
+      <!-- 오브젝트핏 커버는 높이와 너비를 설정해줬는데 사진이란것이 비율이 제각각이다 그러한 거에서 찌그러지지 않도록 이미지를 자동으로 컷팅해주는 옵션 -->
+      <img src="{{ target_user.profile.image.url }}" alt="" style="height: 12rem; width: 12rem; border-radius: 20rem; margin-bottom: 2rem; object-fit: cover;"/>
+      <h2 style="font-weight: bold;">
+        {{ target_user.profile.nickname }}
+        {% if target_user == user %}
+        <!-- 프로필 수정 타겟유저가 진짜유저일때 -->
+        <a title="프로필수정" class="material-icons" style="box-shadow: 0 0 4px #ccc; border-radius: 10rem; padding: 0.4rem;" href="{% url 'profileapp:update' pk=target_user.profile.pk %}">
+          edit
+        </a>
+        {% endif %}
+      </h2>
+      {% else %}
+        {% if target_user == user %}
+        <!-- 타겟유저가 진짜 소유주 유저이면면 -->
+        <a href="{% url 'profileapp:create' %}">
+          <span class="material-icons" style="font-size: 3rem;">
+            person_add_alt_1
+          </span>
+          <h2 style="font-weight: bold;">
+            프로필생성
+          </h2>
+        </a>
+        {% else %}
+        <h2>
+          닉네임 없음
+        </h2>
+        {% endif %}
+      {% endif %}
+      <!-- 프로필메세지 -->
+      <h5 style="margin-bottom:3rem;">
+        {{ target_user.profile.message }}
+      </h5>
+
+      {% if target_user == user %}
+        <a class="material-icons"
+           style="box-shadow: 0 0 4px #ccc; border-radius: 10rem; padding: .4rem;"
+           href="{% url 'accountapp:update' pk=user.pk %}">
+            settings
+        </a>
+        <a class="material-icons"
+           style="box-shadow: 0 0 4px #fcc; border-radius: 10rem; padding: .4rem;"
+           href="{% url 'accountapp:delete' pk=user.pk %}">
+            cancel
+        </a>
+        
+
+      {% endif %}
+    </div>
+
+    <div>
+      {% include 'snippets/list_fragment.html' with article_list=object_list %}
+    </div>
+
+  </div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load bootstrap4 %}
+
+{% block content %}
+
+  <div style="text-align: center; max-width: 600px; margin: 4rem auto">
+    <div class="mb-4">
+      <h4>댓글 생성</h4>
+    </div>
+    <form action="{% url 'commentapp:create' %}" method="post">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      {% if user.is_authenticated %}
+      <input type="submit" class="btn btn-dark rounded-pill col-3 mt-3">
+      {% else %}
+      <!-- next 파라미터로 로그인 할시에 여기로 다시 돌아오게끔 함 -->
+      <a href="{% url 'accountapp:login' %}?next={{ request.path }}" class="btn btn-dark rounded-pill col-6 mt-3">
+        Log in
+      </a>
+      {% endif %}
+      <!-- temp_comment.article = Article.objects.get(pk=self.request.POST['article_pk']) 이걸 얻기 위해 hidden 을 씀 -->
+      <input type="hidden" name="article_pk" value="{{ article.pk }}">
+    </form>
+  </div>
+
+{% endblock %}

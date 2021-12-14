@@ -1,0 +1,151 @@
+<!-- create.html 이랑 detail.html 은 어카운트앱의 html 을 수정함 -->
+<!-- 프로필 분기구문부분은 삭제했음 -->
+
+{% extends 'base.html' %}
+
+{% load social_share %}
+{% load static %}
+
+{% block content %}
+  <style>
+    .facebook-this, .tweet-this {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 3px;
+    }
+    .mte {
+      display: block;
+      width: 30%;
+    }
+    .fa-facebook {
+      color: #3b5998;
+      font-size: 25px;
+    }
+
+    .fa-twitter {
+      color: #00acee;
+      font-size: 25px;
+    }
+
+    #kakaotalk {
+      width: 25px;
+    }
+
+    .gall_edit {
+      position: absolute;
+    }
+
+  </style>
+
+  <div>
+    <div style="text-align: center; max-width: 500px; margin: 4rem auto 1.5rem auto;">
+      {% static "img/fb.png" as fb_icon %}
+        <span class="mte ml-auto">
+          {% post_to_facebook project.get_absolute_url '<i class="fab fa-facebook"></i>' %}
+          {% post_to_twitter "Window4sns {{target_project.title}} 로 초대합니다" project.get_absolute_url '<i class="fab fa-twitter"></i>' %}
+          <a id="create-kakao-link-btn" href="javascript:;">
+            <img id="kakaotalk"
+              src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"
+            />
+          </a>
+        </span>
+
+
+
+      <img src="{{ target_project.image.url }}" alt=""
+           style="height: 12rem; width: 12rem; border-radius: 20rem; margin-bottom: 2rem; object-fit: cover;">
+      {% if target_project.writer == request.user %}
+      <a title="갤러리수정" href="{% url 'projectapp:update' pk=target_project.pk %}" class="material-icons gall_edit" style="box-shadow: 0 0 4px #ccc; border-radius: 10rem; padding: 0.4rem;">
+        edit
+      </a>
+      {% endif %}
+      <p> 갤 매니져: <strong style="font-size:2rem;"> {{ target_project.writer }}</strong> </p>
+      <h2 style="font-weight:bold;">
+        {{ target_project.title }}
+      </h2>
+      <h5>
+        {{ target_project.description }}
+      </h5>
+      <span style="font-size: 0.9rem; letter-spacing: 0.01em;">구독자 <strong style="font-size: 1.3rem;">{{ target_project.subscription.count }}</strong> 명 </span>&nbsp;
+      <span style="font-size: 0.9rem; letter-spacing: 0.01em;">게시물 <strong style="font-size: 1.3rem;">{{ target_project.article.count }}</strong> 개</span>
+    </div>
+
+    <div class="text-center mb-5">
+      {% if user.is_authenticated %}
+        {% if not subscription %}
+        <!-- 구독하지 않았다면 겟요청으로 ?project_pk 의 값인 target_project.pk 를 넘겨줌 -->
+        <a href="{% url 'subscribeapp:subscribe' %}?project_pk={{ target_project.pk }}"
+           class="btn btn-primary rounded-pill px-4">
+          Subscribe
+        </a>
+        {% else %}
+        <!-- 구독 했다면 같은 위치로 겟요청으로 넘겨줌 -->
+        <a href="{% url 'subscribeapp:subscribe' %}?project_pk={{ target_project.pk }}"
+           class="btn btn-dark rounded-pill px-4">
+          Unsubscribe
+        </a>
+        {% endif %}
+      {% endif %}
+    </div>
+    <!-- object_list 는 views.py 에 서 넘어온 거고 article_list 는 list_fragment.html 에 있는 article_list 임 -->
+    <div>
+      {% include 'snippets/list_fragment.html' with article_list=object_list %}
+    </div>
+    <div style="text-align: center">
+        <a href="{% url 'articleapp:create' %}?project_pk={{ target_project.pk }}" class="btn btn-dark rounded-pill mt-3 mb-3 px-3">
+            게시글 생성
+        </a>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+Kakao.init('카카오api키'); // 초기화
+
+Kakao.Link.createDefaultButton({
+    container: '#create-kakao-link-btn',
+    objectType: 'feed',
+    content: {
+      title: '{{ target_project.title }}',
+      description: '#wind4sns #{{ target_project.title }}',
+      imageUrl:
+        'https://도메인{{ target_project.image.url }}',
+      link: {
+        mobileWebUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}',
+        webUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}' ,
+      },
+    },
+    social: {
+      likeCount: 286,
+      commentCount: 45,
+      sharedCount: 845,
+    },
+    buttons: [
+      {
+        title: '웹으로 보기',
+        link: {
+          mobileWebUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}',
+          webUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}',
+        },
+      },
+      {
+        title: '앱으로 보기',
+        link: {
+          mobileWebUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}',
+          webUrl: 'https://도메인/projects/detail/' + '{{target_project.pk}}',
+        },
+      },
+    ],
+  })
+</script>
+
+
+{% endblock %}

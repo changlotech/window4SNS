@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    <a href="{% url 'projectapp:detail' pk=target_article.project.pk %}" style="color: #29367c; font-weight:bold;">
+        <h1 class="container" style="max-width: 700px;" >
+            <span class="material-icons">stars</span>{{ target_article.project.title }}<span class="material-icons">stars</span>
+        </h1>
+    </a>
+  <div>
+
+    <div style="text-align: center; max-width: 700px; margin: 4rem auto;">
+
+      <h1>
+        {{ target_article.title }}
+      </h1>
+
+      <div style="height: 2rem;">
+        <a href="{% url 'likeapp:article_like' pk=target_article.pk %}">
+          <i style="vertical-align: middle; font-size: 1.2rem; color: #f77"
+             class="material-icons">
+            favorite
+          </i>
+        </a>
+        <span style="vertical-align: middle; font-size: 1.2rem;">
+          {{ target_article.like }}
+        </span>
+        &nbsp;&nbsp;
+        <span class="hit-count"  style="vertical-align: middle; font-size: 1.2rem;">
+<!--          <span class="material-icons" style="vertical-align: middle; color:#444;">-->
+<!--            remove_red_eye-->
+<!--          </span>-->
+          조회수
+          {% load hitcount_tags %}
+          <span style="vertical-align: 0.05em; font-size: 1.2rem;">
+            {% get_hit_count for target_article %}
+          </span>
+        </span>
+      </div>
+      {% if target_article.writer.profile %}
+      <h5>
+        <img src="{{ target_article.writer.profile.image.url }}" style="height: 3rem; width: 3rem; border-radius: 20rem;  object-fit: cover;" /> {{ target_article.writer.profile.nickname }}
+      </h5>
+      <hr />
+      {% else %}
+      <h5>
+        <span style="vertical-align: -0.24rem;" class="material-icons">face</span> {{ target_article.writer }}
+      </h5>
+      <hr />
+      {% endif %}
+
+      <img style="width: 200px; border-radius: 1rem; margin: 2rem 0;" src="{{ target_article.image.url }}" alt="">
+      <!-- 이스케이프방지 -->
+      <div class="text-left">
+        {{ target_article.content | safe }}
+      </div>
+      <div class="d-flex justify-content-end">
+          <div class="badge badge-light p-2 text-right" style="text-align: right;">
+            <div>{{ target_article.created_at }}</div>
+          </div>
+      </div>
+
+      {% if target_article.writer == user %}
+      <a title="수정" href="{% url 'articleapp:update' pk=target_article.pk %}" class="material-icons" style="box-shadow: 0 0 4px #ccc; border-radius: 10rem; padding: 0.4rem;">
+        edit
+      </a>
+      <a title="삭제" href="{% url 'articleapp:delete' pk=target_article.pk %}" class="material-icons"
+           style="box-shadow: 0 0 4px #fcc; border-radius: 10rem; padding: .4rem;">
+        cancel
+      </a>
+      {% endif %}
+      <hr />
+
+      {% for comment in target_article.comment.all %}
+        {% include 'commentapp/detail.html' with comment=comment %}
+      {% endfor %}
+
+      {% include 'commentapp/create.html' with article=target_article %}
+
+    </div>
+  </div>
+
+{% endblock %}

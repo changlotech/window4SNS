@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 매직그리드 CSS .container .item 들의 높이는 다 지움 width 는 250px 로변경하고 border-radius 줌 -->
+<!-- 상자안의 이미지 width: 100% 랑 보더 레디어스 추가 -->
+<style>
+
+    .container {
+        padding: 0;
+        margin: 0, auto;
+    }
+
+    .container a {
+      width: 45%;
+      max-width: 250px;
+    }
+
+    .container div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 1rem;
+    }
+
+    .container img {
+      width: 100%;
+      border-radius: 1rem;
+    }
+
+    .article_like, .article_comment {
+        display: inline;
+        vertical-align: middle;
+        color: rgb(49, 40, 40);
+        font-size: 1.05rem !important;
+    }
+
+    .card_bot {
+        box-shadow: 0 4px 4px -4px black;       
+        
+    }
+
+</style>
+
+    {% if article_list %}
+    <div class="container">
+        {% for article in article_list %}
+        {% if article.like > 1 %}
+        <a href="{% url 'articleapp:detail' pk=article.pk %}">
+            {% include 'snippets/card.html' with article=article %}
+            <div class="card_bot">
+                <span class="fav_comment_count">        
+                    <i style="color: #ff6e6e; vertical-align: bottom" class="material-icons">favorite</i>
+                    <p class="article_like">{{ article.like }}</p>
+                    <i style="color: #6a6a6a; vertical-align: bottom" class="material-icons">comment</i>
+                    {% if article.comment.count > 0 %}
+                    <p class="article_comment">{{ article.comment.count  }}</p>
+                    {% else %}
+                    <p class="article_comment">0</p>                    
+                    {% endif %}
+                </span>
+            </div>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <script src="{% static 'js/magicgrid.js' %}"></script>
+    {% else %}
+    <div class="text-center">
+        <h1>No Articles</h1>
+    </div>
+    {% endif %}
+
+    {% include 'snippets/pagination.html' with page_obj=page_obj %}
+
+
+
+
+
+
+{% endblock %}

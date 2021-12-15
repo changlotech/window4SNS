@@ -23,6 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-!&=u^da20==-nf6ze-t)_p&8^^87w3sh%ff@u*!mtq*@$y07ym'
 
+DEBUG = int(os.environ.get('DEBUG', 1))
+
+if os.environ.get('DJANGO_ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split('')
+else:
+    ALLOWED_HOSTS = []
+
 
 # Application definition
 
